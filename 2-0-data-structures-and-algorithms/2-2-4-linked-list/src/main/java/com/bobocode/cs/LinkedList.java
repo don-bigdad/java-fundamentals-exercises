@@ -74,29 +74,27 @@ public class LinkedList<T> implements List<T> {
      */
     @Override
     public void add(int index, T element) {
-        if (index > size) {
+        if (index > size || index < 0) {
             throw new IndexOutOfBoundsException();
         }
         Node<T> newNode = new Node<>(element);
         if (head == null) {
             head = tail = newNode;
-        }
-        if (index == 0) {
-            Node<T> temp = head;
+        } else if (index == 0) {
+            newNode.next = head;
             head = newNode;
-            head.next = temp;
-        }
-        if (index == size) {
+        } else if (index == size) {
             tail.next = newNode;
             tail = newNode;
         } else {
             Node<T> currentNode = head;
-            for (int i = 0; i < index; i++) {
+            for (int i = 0; i < index - 1; i++) {
                 currentNode = currentNode.next;
             }
             newNode.next = currentNode.next;
             currentNode.next = newNode;
         }
+
         size++;
     }
 
@@ -171,7 +169,26 @@ public class LinkedList<T> implements List<T> {
      */
     @Override
     public T remove(int index) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        Objects.checkIndex(index,size);
+        Node<T> currentNode = head;
+        T element = currentNode.element;
+        if (index==0) {
+            head = head.next;
+            if (head==null) {
+                tail = null;
+            }
+        } else {
+            for (int i = 0; i < index - 1; i++) {
+                currentNode = currentNode.next;
+            }
+            element = currentNode.next.element;
+            currentNode.next = currentNode.next.next;
+            if (index == size - 1) {
+                tail = currentNode;
+            }
+        }
+        size--;
+        return element;
     }
 
 
