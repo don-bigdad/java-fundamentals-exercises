@@ -29,7 +29,7 @@ public class CrazyLambdas {
      * @return a string supplier
      */
     public static Supplier<String> helloSupplier() {
-        return ()->"Hello";
+        return () -> "Hello";
     }
 
     /**
@@ -79,11 +79,10 @@ public class CrazyLambdas {
      * @return int supplier
      */
     public static IntSupplier randomIntSupplier() {
-        IntSupplier intSupplier = () -> {
+        return  () -> {
             Random random = new Random();
             return random.nextInt();
         };
-        return intSupplier;
     }
 
 
@@ -137,7 +136,7 @@ public class CrazyLambdas {
      * @return a function supplier
      */
     public static Supplier<IntUnaryOperator> nMultiplyFunctionSupplier(int n) {
-        throw new ExerciseNotCompletedException();
+        return () -> x -> x * n;
     }
 
     /**
@@ -146,7 +145,7 @@ public class CrazyLambdas {
      * @return function that composes functions with trim() function
      */
     public static UnaryOperator<Function<String, String>> composeWithTrimFunction() {
-        throw new ExerciseNotCompletedException();
+        return (stringFunction) -> stringFunction.compose(String::trim);
     }
 
     /**
@@ -157,7 +156,11 @@ public class CrazyLambdas {
      * @return a thread supplier
      */
     public static Supplier<Thread> runningThreadSupplier(Runnable runnable) {
-        return () -> (Thread) runnable;
+        return () -> {
+            Thread thread = new Thread(runnable);
+            thread.start();
+            return thread;
+        };
     }
 
     /**
@@ -166,14 +169,7 @@ public class CrazyLambdas {
      * @return a runnable consumer
      */
     public static Consumer<Runnable> newThreadRunnableConsumer() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        };
-       Consumer runnableConsumer = (Consumer<Runnable>) o -> runnable.run();
-       return runnableConsumer;
+        return runnable -> new Thread(runnable).start();
     }
 
     /**
@@ -183,7 +179,11 @@ public class CrazyLambdas {
      * @return a function that transforms runnable into a thread supplier
      */
     public static Function<Runnable, Supplier<Thread>> runnableToThreadSupplierFunction() {
-        throw new ExerciseNotCompletedException();
+        return (runnable) -> () -> {
+            Thread thread = new Thread(runnable);
+            thread.start();
+            return thread;
+        };
     }
 
     /**
