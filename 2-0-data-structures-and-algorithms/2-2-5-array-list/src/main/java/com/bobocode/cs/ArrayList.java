@@ -158,7 +158,6 @@ public class ArrayList<T> implements List<T> {
         if (index >= elements.length) {
             throw new IndexOutOfBoundsException();
         }
-        Object[] newArray = new Object[elements.length];
         Object removedElement = elements[index];
         System.arraycopy(elements, index + 1, elements, index, size - index - 1);
         size--;
