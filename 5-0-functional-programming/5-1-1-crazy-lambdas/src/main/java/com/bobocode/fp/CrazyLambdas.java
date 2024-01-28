@@ -1,13 +1,21 @@
 package com.bobocode.fp;
 
 import com.bobocode.util.ExerciseNotCompletedException;
-import org.checkerframework.checker.units.qual.C;
-
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntPredicate;
+import java.util.function.IntSupplier;
+import java.util.function.IntUnaryOperator;
+import java.util.function.LongBinaryOperator;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
+import java.util.function.UnaryOperator;
 
 /**
  * {@link CrazyLambdas} is an exercise class. Each method returns a functional interface and it should be implemented
@@ -79,7 +87,7 @@ public class CrazyLambdas {
      * @return int supplier
      */
     public static IntSupplier randomIntSupplier() {
-        return  () -> {
+        return () -> {
             Random random = new Random();
             return random.nextInt();
         };
@@ -96,7 +104,7 @@ public class CrazyLambdas {
             Random random = new Random();
             return random.nextInt(operand);
         };
-        return  unaryOperator;
+        return unaryOperator;
     }
 
     /**
@@ -105,8 +113,8 @@ public class CrazyLambdas {
      * @return square operation
      */
     public static IntUnaryOperator intSquareOperation() {
-       IntUnaryOperator unaryOperator = operand -> operand * operand;
-       return unaryOperator;
+        IntUnaryOperator unaryOperator = operand -> operand * operand;
+        return unaryOperator;
     }
 
     /**
@@ -196,8 +204,17 @@ public class CrazyLambdas {
      * @return a binary function that receiver predicate and function and compose them to create a new function
      */
     public static BiFunction<IntUnaryOperator, IntPredicate, IntUnaryOperator> functionToConditionalFunction() {
-        throw new ExerciseNotCompletedException();
+        return (function, predicate) -> {
+            return input -> {
+                if (predicate.test(input)) {
+                    return function.applyAsInt(input);
+                } else {
+                    return input;
+                }
+            };
+        };
     }
+
 
     /**
      * Returns a {@link BiFunction} which first parameter is a {@link Map} where key is a function name, and value is some
@@ -207,7 +224,13 @@ public class CrazyLambdas {
      * @return a high-order function that fetches a function from a function map by a given name or returns identity()
      */
     public static BiFunction<Map<String, IntUnaryOperator>, String, IntUnaryOperator> functionLoader() {
-        throw new ExerciseNotCompletedException();
+        return (stringIntUnaryOperatorMap, string) -> {
+            if (stringIntUnaryOperatorMap.containsKey(string)) {
+                return stringIntUnaryOperatorMap.get(string);
+            } else {
+                return IntUnaryOperator.identity();
+            }
+        };
     }
 
     /**
@@ -225,7 +248,7 @@ public class CrazyLambdas {
      * @return a comparator instance
      */
     public static <T, U extends Comparable<? super U>> Comparator<T> comparing(Function<? super T, ? extends U> mapper) {
-        throw new ExerciseNotCompletedException();
+        return (obj1,obj2) -> mapper.apply(obj1).compareTo(mapper.apply(obj2));
     }
 
     /**
@@ -245,7 +268,14 @@ public class CrazyLambdas {
      */
     public static <T, U extends Comparable<? super U>> Comparator<T> thenComparing(
             Comparator<? super T> comparator, Function<? super T, ? extends U> mapper) {
-        throw new ExerciseNotCompletedException();
+        return (obj1,obj2) -> {
+            if (comparator.compare(obj1,obj2) == 0) {
+                return mapper.apply(obj1).compareTo(mapper.apply(obj2));
+            }
+            else {
+                return comparator.compare(obj1,obj2);
+            }
+        };
     }
 
     /**
@@ -254,7 +284,7 @@ public class CrazyLambdas {
      * @return a supplier instance
      */
     public static Supplier<Supplier<Supplier<String>>> trickyWellDoneSupplier() {
-        throw new ExerciseNotCompletedException();
+        return () -> () -> () -> "WELL DONE!";
     }
 }
 
